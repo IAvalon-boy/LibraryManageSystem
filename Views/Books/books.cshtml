@@ -1,0 +1,163 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+
+@{
+    ViewData["Title"] = "Gestión de Libros";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-book me-2"></i>@ViewData["Title"]</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Nuevo Libro
+    </a>
+</div>
+
+<!-- Filtros y Búsqueda -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar libros...">
+            </div>
+            <div class="col-md-3">
+                <select id="categoryFilter" class="form-control">
+                    <option value="">Todas las categorías</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Science">Science</option>
+                    <option value="Literature">Literature</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="availabilityFilter" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="available">Disponibles</option>
+                    <option value="unavailable">No Disponibles</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Libros -->
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="booksTable" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ISBN</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Categoría</th>
+                        <th>Total</th>
+                        <th>Disponibles</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ISBN</td>
+                            <td>
+                                <strong>@item.Title</strong>
+                                @if (item.Publisher != null)
+                                {
+                                    <br><small class="text-muted">@item.Publisher</small>
+                                }
+                            </td>
+                            <td>@item.Author</td>
+                            <td>
+                                <span class="badge bg-info">@item.Category</span>
+                            </td>
+                            <td>@item.TotalCopies</td>
+                            <td>
+                                <span class="badge @(item.AvailableCopies > 0 ? "bg-success" : "bg-danger")">
+                                    @item.AvailableCopies
+                                </span>
+                            </td>
+                            <td>
+                                @if (item.AvailableCopies > 0)
+                                {
+                                    <span class="badge bg-success">Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Agotado</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@item.Id" 
+                                       class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" 
+                                       class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Inicializar tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Filtros y búsqueda
+        document.getElementById('searchInput').addEventListener('input', filterBooks);
+        document.getElementById('categoryFilter').addEventListener('change', filterBooks);
+        document.getElementById('availabilityFilter').addEventListener('change', filterBooks);
+        document.getElementById('clearFilters').addEventListener('click', clearFilters);
+
+        function filterBooks() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+            
+            const rows = document.querySelectorAll('#booksTable tbody tr');
+            
+            rows.forEach(row => {
+                const title = row.cells[1].textContent.toLowerCase();
+                const author = row.cells[2].textContent.toLowerCase();
+                const rowCategory = row.cells[3].textContent;
+                const available = row.cells[5].textContent.trim() > 0;
+                
+                const matchesSearch = title.includes(searchText) || author.includes(searchText);
+                const matchesCategory = !category || rowCategory.includes(category);
+                const matchesAvailability = !availability || 
+                    (availability === 'available' && available) || 
+                    (availability === 'unavailable' && !available);
+                
+                row.style.display = (matchesSearch && matchesCategory && matchesAvailability) ? '' : 'none';
+            });
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('availabilityFilter').value = '';
+            filterBooks();
+        }
+    </script>
+}

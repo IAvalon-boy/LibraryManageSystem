@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Biblioteca Nacional</title>
+    
+    <!-- Bootstrap CSS INLINE como fallback -->
+    <style>
+        /* BOOTSTRAP BASICO */
+        .container-fluid { width: 100%; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; }
+        .row { display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; }
+        .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+        .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+        .col-lg-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+        .col-lg-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+        
+        /* ESTILOS PRINCIPALES INLINE */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: #2c3e50 !important;
+            color: white !important;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .main-container {
+            background: white !important;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: white !important;
+            padding: 15px 20px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #34495e;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: #34495e !important;
+        }
+        
+        .nav-link.active {
+            background: #3498db !important;
+            font-weight: bold;
+        }
+        
+        .navbar {
+            background: #f8f9fa !important;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50 !important;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            text-align: center;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-outline-primary { background: transparent; border: 2px solid #3498db; color: #3498db; }
+        .btn-outline-success { background: transparent; border: 2px solid #27ae60; color: #27ae60; }
+        .btn-outline-warning { background: transparent; border: 2px solid #f39c12; color: #f39c12; }
+        
+        .text-muted { color: #6c757d !important; }
+        .text-success { color: #27ae60 !important; }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .mb-4 { margin-bottom: 2rem !important; }
+        .mt-4 { margin-top: 2rem !important; }
+        .mb-0 { margin-bottom: 0 !important; }
+    </style>
+    
+    <!-- Intentar cargar Bootstrap externo -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" onerror="console.log('Bootstrap no se pudo cargar')">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div style="text-align: center; padding: 2rem 1rem;">
+                    <h4 style="color: white; margin-bottom: 0.5rem;">📚 Biblioteca</h4>
+                    <small style="color: #bdc3c7;">Sistema de Gestión</small>
+                </div>
+                <nav style="display: flex; flex-direction: column;">
+                    <a class="nav-link active" href="/Home">🏠 Dashboard</a>
+                    <a class="nav-link" href="/Books">📖 Libros</a>
+                    <a class="nav-link" href="/Users">👥 Usuarios</a>
+                    <a class="nav-link" href="/Loans">🔄 Préstamos</a>
+                    <a class="nav-link" href="/Reports">📊 Reportes</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-container">
+                <!-- Top Bar -->
+                <nav class="navbar">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <span class="navbar-brand">Sistema de Gestión Bibliotecaria</span>
+                        <span style="color: #6c757d;">
+                            👤 Administrador
+                        </span>
+                    </div>
+                </nav>
+
+                <!-- Page Content -->
+                <main>
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar si los estilos se cargaron
+        console.log("Página cargada - verificando estilos...");
+        
+        // Verificar Bootstrap
+        if (typeof bootstrap === 'undefined') {
+            console.log("Bootstrap NO está cargado - usando estilos inline");
+        } else {
+            console.log("Bootstrap está cargado correctamente");
+        }
+        
+        // Verificar elementos visuales
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.querySelector('body');
+            console.log("Color de fondo del body:", window.getComputedStyle(body).backgroundColor);
+            
+            const sidebar = document.querySelector('.sidebar');
+            console.log("Color de fondo del sidebar:", window.getComputedStyle(sidebar).backgroundColor);
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
